@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: alpha
+  namespace: dev
+  labels:
+    app: acada
+spec:
+  containers:
+    - name: alpha-c
+      image: acadalearning/acada:2.5
+      ports:
+      - containerPort: 8080
+

@@ -1,0 +1,20 @@
+# ReplicationController
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: ini-rc
+  namespace: dev
+spec:
+  selector:
+    app: webapp
+  template:
+    metadata:
+      name: ini-pod
+      labels:
+        app: webapp
+    spec:
+      containers:
+        - name: ini-c
+          image: acadalearning/acada:2.5
+          ports:
+            - containerPort: 8080
