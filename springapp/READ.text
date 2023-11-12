@@ -1,0 +1,9 @@
+# In this directory, we combined the spring-boot-mongo server with mongo server.
+# Each server has a replicaSet type and the Service associated with the server.
+# Spring-boot-mongo is Deployment kind with NodePort Service.
+# Mongo is ReplicaSet kind with ClusterIP Service.
+# We also connected a local volume of the shared database.
+
+# We can create/start, apply changes, or stop/remove the servers together by:
+kubectl apply -f springapp/
+kubectl delete -f springapp/
