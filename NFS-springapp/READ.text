@@ -2,8 +2,48 @@
 # Each server has a replicaSet type and the Service associated with the server.
 # Spring-boot-mongo is Deployment kind with NodePort Service.
 # Mongo is ReplicaSet kind with ClusterIP Service.
-# We also connected a local volume of the shared database.
+# This time we connect the volume to an external volume - NFS
 
 # We can create/start, apply changes, or stop/remove the servers together by:
 kubectl apply -f springapp/
 kubectl delete -f springapp/
+
+# How to setup NFS service and its connections:
+
+# Create an instance
+
+# Installing NFS:
+sudo hostname nfs 
+sudo apt-get update
+sudo apt install nfs-kernel-server -y 
+
+# Configure NFS server:
+# Create a directory for the external volume 
+sudo mkdir  -p /mnt/share/
+
+# Give the directory open access to write, read, execute by anyone
+sudo chown nobody:nogroup /mnt/share
+sudo chmod 777 /mnt/share
+
+# Edit the exports file in /ect/ and add the new directory
+sudo vi /etc/exports
+/srv/homes       hostname1(rw,sync,no_subtree_check) hostname2(ro,sync,no_subtree_check)
+/mnt/share       *(rw,sync,no_subtree_check,no_root_squash) 
+
+# Activate and restart the services
+sudo exportfs -a
+sudo systemctl restart  nfs-kernel-server
+
+* open port 2049 (default port) on the NFS server security group
+
+Note: On all the servers install 
+      sudo apt-get install update
+      sudo apt-get install nfs-common -y
+
+# The syntax for the external volume script
+volumes:
+ - name: nfsvol
+   nfs:
+    server: ipaddress
+     path: /mnt/share
+-name: nfsvol
